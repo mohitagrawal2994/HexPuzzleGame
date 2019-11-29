@@ -15,8 +15,10 @@ AHexGridMesh::AHexGridMesh()
 	HexTileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HexTileMesh"));
 	RootComponent = HexTileMesh;
 
-	RGBColor = FVector(0.5, 0.5, 0.5);
+	ColorParamName = "Color";
+	NumberParamName = "Number";
 
+	CanMoveMesh = false;
 }
 
 // Called when the game starts or when spawned
@@ -51,20 +53,35 @@ void AHexGridMesh::SettingMaterials()
 	if (HexDynamicMaterial && (AlphaArray.Num() > 0 ) && (AlphaArray.Num() < 5))
 	{
 		//Assigning the alpha based on tile value
-		HexDynamicMaterial->SetTextureParameterValue("Number", AlphaArray[TileValue]);
+		HexDynamicMaterial->SetTextureParameterValue(NumberParamName, AlphaArray[TileValue]);
 
 		//Assigning RGB Based on tile value
 		switch (TileValue)
 		{
-			case 1: HexDynamicMaterial->SetVectorParameterValue("Color", FLinearColor(1, 0, 0, 1));
+			case 1: HexDynamicMaterial->SetVectorParameterValue(ColorParamName, FLinearColor(1, 0, 0, 1));
 					break;
-			case 2: HexDynamicMaterial->SetVectorParameterValue("Color", FLinearColor(0, 1, 0, 1));
+			case 2: HexDynamicMaterial->SetVectorParameterValue(ColorParamName, FLinearColor(0, 1, 0, 1));
 					break;
-			case 3: HexDynamicMaterial->SetVectorParameterValue("Color", FLinearColor(0, 0, 1, 1));
+			case 3: HexDynamicMaterial->SetVectorParameterValue(ColorParamName, FLinearColor(0, 0, 1, 1));
 					break;
-			default : HexDynamicMaterial->SetVectorParameterValue("Color", FLinearColor(0.5, 0.5, 0.5, 1));
+			default : HexDynamicMaterial->SetVectorParameterValue(ColorParamName, FLinearColor(0.5, 0.5, 0.5, 1));
 
 		}
 	}
+}
+
+void AHexGridMesh::UnlockMesh()
+{
+	CanMoveMesh = true;
+}
+
+void AHexGridMesh::LockMesh()
+{
+	CanMoveMesh = false;
+}
+
+bool AHexGridMesh::GetMeshStatus()
+{
+	return CanMoveMesh;
 }
 

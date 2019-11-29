@@ -59,6 +59,7 @@ void AHexSpawner::SpawnHexagonMesh()
 
 			MySpawnedHexMesh->SetValue(FMath::RandRange(1,3));
 			MySpawnedHexMesh->SettingMaterials();
+			MySpawnedHexMesh->UnlockMesh();
 		}
 	}
 }
