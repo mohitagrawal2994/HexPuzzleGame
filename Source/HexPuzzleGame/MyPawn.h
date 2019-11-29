@@ -15,6 +15,12 @@ private :
 	UPROPERTY(EditDefaultsOnly,  Category = "Camera")
 	class UCameraComponent* OrthoCameraComponent;
 
+	//Empty class to hold the player controller
+	class APlayerController* PController;
+
+	//Empty class to hold the actors which got hit on click
+	class AHexGridMesh* SelectedHexMesh;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -28,5 +34,10 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	//Function that binds the user functionality
+	void HoldHex();
+
+	void ReleaseHex();
 
 };

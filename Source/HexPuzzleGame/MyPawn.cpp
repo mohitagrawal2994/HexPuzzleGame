@@ -3,6 +3,9 @@
 
 #include "MyPawn.h"
 #include "Camera/CameraComponent.h"
+#include "Components/InputComponent.h"
+#include "GameFramework/PlayerController.h"
+#include "HexGridMesh.h"
 
 // Sets default values
 AMyPawn::AMyPawn()
@@ -22,7 +25,9 @@ void AMyPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	
+	PController = Cast<APlayerController>(GetController());
+	PController->bShowMouseCursor = true;
+	PController->bEnableClickEvents = true;
 }
 
 // Called every frame
@@ -37,5 +42,28 @@ void AMyPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	//Binding Firing events
+	PlayerInputComponent->BindAction("MHold", IE_Pressed, this, &AMyPawn::HoldHex);
+	PlayerInputComponent->BindAction("MHold", IE_Released, this, &AMyPawn::ReleaseHex);
+}
+
+void AMyPawn::HoldHex()
+{
+	FHitResult HitResult;
+	PController->GetHitResultUnderCursor(ECollisionChannel::ECC_WorldStatic, false, HitResult);
+	if (HitResult.bBlockingHit)
+	{
+		if (HitResult.GetActor()->GetClass()->IsChildOf(AHexGridMesh::StaticClass()))
+		{
+			SelectedHexMesh = Cast<AHexGridMesh>(HitResult.GetActor());
+			UE_LOG(LogTemp, Warning, TEXT("Got The hexmesh"));
+		}
+	}
+}
+
+void AMyPawn::ReleaseHex()
+{
+	SelectedHexMesh = NULL;
+	UE_LOG(LogTemp, Warning, TEXT("Released The mouse"));
 }
 

@@ -63,6 +63,7 @@ void AHexGrid::SpawnGrid()
 						CalcYPos = (yDisplace*j) + yOffset;
 					}
 					SpawnedItemsArray[i][j] = GetWorld()->SpawnActor<AHexGridMesh>(HexagonMesh, FVector(xOffset * i, CalcYPos, 0), FRotator(0, 0, 0), SpawnParams);
+					SpawnedItemsArray[i][j]->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
 				}
 			}
 		}
