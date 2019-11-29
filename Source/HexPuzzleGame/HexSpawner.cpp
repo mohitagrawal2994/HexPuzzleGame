@@ -56,6 +56,9 @@ void AHexSpawner::SpawnHexagonMesh()
 			SpawnParams.Instigator = Instigator;
 
 			MySpawnedHexMesh = GetWorld()->SpawnActor<AHexGridMesh>(HexagonMesh, HexSpawnBox->GetComponentLocation(), FRotator(0, 0, 0), SpawnParams);
+
+			MySpawnedHexMesh->SetValue(FMath::RandRange(1,3));
+			MySpawnedHexMesh->SettingMaterials();
 		}
 	}
 }

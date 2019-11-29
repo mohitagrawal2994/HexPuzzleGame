@@ -15,6 +15,15 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override; 
 
+	//Pointer to store the dynamic material instance
+	UMaterialInstanceDynamic* HexDynamicMaterial;
+
+	//Array that stores the 2d textures of alpha of numbers
+	UPROPERTY(EditDefaultsOnly, Category = "AlphaArray")
+	TArray<UTexture2D*> AlphaArray;
+
+	FVector RGBColor;
+
 	//Grid's current tile value
 	int TileValue;
 
@@ -27,5 +36,14 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Mesh")
 	class UStaticMeshComponent* HexTileMesh;
+
+	//Function to return the tile value of the hexagon
+	int GetValue();
+
+	//Function to set the random number value assigned to it
+	void SetValue(int Gvalue);
+
+	//Function to set the material on the hexagon based on tilevalue
+	void SettingMaterials();
 
 };

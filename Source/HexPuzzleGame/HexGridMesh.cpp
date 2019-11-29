@@ -3,6 +3,7 @@
 
 #include "HexGridMesh.h"
 #include "Components/StaticMeshComponent.h"
+#include "Engine/Classes/Materials/MaterialInstanceDynamic.h"
 
 // Sets default values
 AHexGridMesh::AHexGridMesh()
@@ -14,13 +15,17 @@ AHexGridMesh::AHexGridMesh()
 	HexTileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HexTileMesh"));
 	RootComponent = HexTileMesh;
 
+	RGBColor = FVector(0.5, 0.5, 0.5);
+
 }
 
 // Called when the game starts or when spawned
 void AHexGridMesh::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	//Creating a dynamic material with material index 0
+	HexDynamicMaterial = HexTileMesh->CreateDynamicMaterialInstance(0);
+
 }
 
 // Called every frame
@@ -28,5 +33,38 @@ void AHexGridMesh::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+int AHexGridMesh::GetValue()
+{
+	return TileValue;
+}
+
+void AHexGridMesh::SetValue(int Gvalue)
+{
+	TileValue = Gvalue;
+}
+
+void AHexGridMesh::SettingMaterials()
+{
+	//Checking if the dynamic material exists
+	if (HexDynamicMaterial && (AlphaArray.Num() > 0 ) && (AlphaArray.Num() < 5))
+	{
+		//Assigning the alpha based on tile value
+		HexDynamicMaterial->SetTextureParameterValue("Number", AlphaArray[TileValue]);
+
+		//Assigning RGB Based on tile value
+		switch (TileValue)
+		{
+			case 1: HexDynamicMaterial->SetVectorParameterValue("Color", FLinearColor(1, 0, 0, 1));
+					break;
+			case 2: HexDynamicMaterial->SetVectorParameterValue("Color", FLinearColor(0, 1, 0, 1));
+					break;
+			case 3: HexDynamicMaterial->SetVectorParameterValue("Color", FLinearColor(0, 0, 1, 1));
+					break;
+			default : HexDynamicMaterial->SetVectorParameterValue("Color", FLinearColor(0.5, 0.5, 0.5, 1));
+
+		}
+	}
 }
 
