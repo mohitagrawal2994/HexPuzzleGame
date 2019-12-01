@@ -86,7 +86,6 @@ void AMyPawn::HoldHex()
 	PController->GetHitResultUnderCursor(ECollisionChannel::ECC_WorldStatic, false, HitResult);
 	if (HitResult.bBlockingHit)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Did not hit anything"));
 		if (HitResult.GetActor()->GetClass()->IsChildOf(AHexGridMesh::StaticClass()))
 		{
 			SelectedHexMesh = Cast<AHexGridMesh>(HitResult.GetActor());
