@@ -11,12 +11,10 @@
 AHexSpawner::AHexSpawner()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	HexSpawnBox = CreateDefaultSubobject<UBoxComponent>(TEXT("HexSpawnBox"));
 	RootComponent = HexSpawnBox;
-
-	CanSpawnHex = true;
 }
 
 // Called when the game starts or when spawned
@@ -25,28 +23,12 @@ void AHexSpawner::BeginPlay()
 	Super::BeginPlay();
 	
 	//Spawning the first hex
-	if (CanSpawnHex)
-	{
-		SpawnHexagonMesh();
-	}
-}
-
-// Called every frame
-void AHexSpawner::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	if (CanSpawnHex)
-	{
-		//Spawn an Hex
-		SpawnHexagonMesh();
-	}
+	SpawnHexagonMesh();
 
 }
 
 void AHexSpawner::SpawnHexagonMesh()
 {
-	CanSpawnHex = false;
 	if (HexagonMesh != NULL)
 	{
 		if (GetWorld())

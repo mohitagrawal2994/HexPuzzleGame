@@ -26,12 +26,6 @@ public:
 	// Sets default values for this actor's properties
 	AHexSpawner();
 
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	//Boolean to allow spawning
-	bool CanSpawnHex;
-
 	//Mesh to spawn in spawn area
 	UPROPERTY(EditDefaultsOnly, Category = "Mesh")
 	TSubclassOf<class AHexGridMesh> HexagonMesh;

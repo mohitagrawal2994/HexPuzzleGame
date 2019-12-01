@@ -21,6 +21,16 @@ private :
 	//Empty class to hold the actors which got hit on click
 	class AHexGridMesh* SelectedHexMesh;
 
+	//Vectors to hold the current cursor position
+	FVector WorldLocation;
+	FVector WorldDirection;
+
+	//Boolean to check if holding any object
+	bool CanHoldHex;
+
+	//Boolean to say that the new spawner is ready to spawn
+	bool IsReadyToSpawn;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -39,5 +49,9 @@ public:
 	void HoldHex();
 
 	void ReleaseHex();
+
+	//Variable to store Current HexSpawner in scene
+	UPROPERTY(EditAnywhere, Category = "Hexagon Spawner")
+	class AHexSpawner* CurrentHexSpawner;
 
 };
