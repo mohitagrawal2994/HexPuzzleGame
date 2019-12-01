@@ -86,6 +86,7 @@ void AMyPawn::HoldHex()
 	PController->GetHitResultUnderCursor(ECollisionChannel::ECC_WorldStatic, false, HitResult);
 	if (HitResult.bBlockingHit)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Did not hit anything"));
 		if (HitResult.GetActor()->GetClass()->IsChildOf(AHexGridMesh::StaticClass()))
 		{
 			SelectedHexMesh = Cast<AHexGridMesh>(HitResult.GetActor());
@@ -99,6 +100,10 @@ void AMyPawn::HoldHex()
 
 void AMyPawn::ReleaseHex()
 {
+	if (SelectedHexMesh == NULL)
+	{
+		return;
+	}
 	//Removing the property to move the mesh
 	CanHoldHex = false;
 

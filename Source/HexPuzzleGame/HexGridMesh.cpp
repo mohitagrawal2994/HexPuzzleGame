@@ -78,13 +78,22 @@ void AHexGridMesh::UnlockMesh()
 bool AHexGridMesh::LockMesh()
 {
 	CanMoveMesh = false;
-
-	//Returns a value if successfully locked the mesh onto hexgrid
+	
+	//Returns true value if successfully locked the mesh onto hexgrid
 	return true;
 }
 
 bool AHexGridMesh::GetMeshStatus()
 {
 	return CanMoveMesh;
+}
+
+void AHexGridMesh::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	// Other Actor is the actor that triggered the event. Check that is not ourself.  
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Overlapping actor is %s"), *OtherActor->GetName());
+	}
 }
 
