@@ -28,6 +28,8 @@ protected:
 	//Boolean to store whether the piece can be moved
 	bool CanMoveMesh;
 
+	AActor* CurrentOverlappingActor;
+
 public:
 	// Sets default values for this actor's properties
 	AHexGridMesh();
@@ -58,7 +60,7 @@ public:
 	void UnlockMesh();
 
 	//Function to lock the mesh into its current position
-	bool LockMesh();
+	bool LockMesh(FVector SpawnerLocation);
 
 	//Function to return the status of the current/selected mesh
 	bool GetMeshStatus();

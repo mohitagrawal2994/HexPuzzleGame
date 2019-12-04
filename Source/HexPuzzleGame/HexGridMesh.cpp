@@ -14,6 +14,9 @@ AHexGridMesh::AHexGridMesh()
 	TileValue = 0;
 	HexTileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HexTileMesh"));
 	RootComponent = HexTileMesh;
+	HexTileMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	HexTileMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+	HexTileMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Overlap);
 
 	ColorParamName = "Color";
 	NumberParamName = "Number";
@@ -21,7 +24,8 @@ AHexGridMesh::AHexGridMesh()
 	CanMoveMesh = false;
 
 	HexTileMesh->OnComponentBeginOverlap.AddDynamic(this, &AHexGridMesh::OnOverlapBegin);
-	//HexTileMesh->OnComponentEndOverlap.AddDynamic(this, &AHexGridMesh::OnOverlapEnd);
+
+	CurrentOverlappingActor = NULL;
 }
 
 // Called when the game starts or when spawned
@@ -78,12 +82,36 @@ void AHexGridMesh::UnlockMesh()
 	CanMoveMesh = true;
 }
 
-bool AHexGridMesh::LockMesh()
+bool AHexGridMesh::LockMesh(FVector SpawnerLocation)
 {
-	CanMoveMesh = false;
-	
-	//Returns true value if successfully locked the mesh onto hexgrid
-	return true;
+	if(CurrentOverlappingActor != NULL)
+	{
+		CanMoveMesh = false;
+		//Set current mesh location to colliding actor location
+		FVector NewLocation = CurrentOverlappingActor->GetActorLocation();
+		NewLocation.Z = NewLocation.Z + 5;
+		this->SetActorLocation(NewLocation);
+
+		//copy value from current actor to colliding actor
+
+		//Disable collision on colliding actor
+
+		//Set its materials 
+
+		//delete current actor
+
+		//Set the overlapping actor to null
+		CurrentOverlappingActor = NULL;
+		//Returns true value if successfully locked the mesh onto hexgrid
+		return true;
+	}
+	else
+	{
+		//Set actor location to bounding box location
+		this->SetActorLocation(SpawnerLocation);
+		//Returns a false value as the existing piece has not yet fit any tile
+		return false;
+	}
 }
 
 bool AHexGridMesh::GetMeshStatus()
@@ -96,7 +124,6 @@ void AHexGridMesh::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 	// Other Actor is the actor that triggered the event. Check that is not ourself.  
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Overlapping actor is %s"), *OtherActor->GetName());
+		CurrentOverlappingActor = Cast<AHexGridMesh>(OtherActor);
 	}
 }
-
