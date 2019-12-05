@@ -109,10 +109,10 @@ void AMyPawn::ReleaseHex()
 	//Locking the mesh's movement
 	IsReadyToSpawn = SelectedHexMesh->LockMeshOntoGrid();
 	
-	if (IsReadyToSpawn && CurrentHexSpawner)
+	/*if (IsReadyToSpawn && CurrentHexSpawner)
 	{
 		CurrentHexSpawner->SpawnHexagonMesh();
-	}
+	}*/
 	//Removing the mesh instance details
 	SelectedHexMesh = NULL;
 }

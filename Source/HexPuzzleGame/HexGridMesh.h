@@ -28,6 +28,9 @@ protected:
 	//Boolean to store whether the piece can be moved
 	bool CanMoveMesh;
 
+	//Boolean to say whether the piece can hold any value(For GridMesh)
+	bool CanHoldValue;
+
 public:
 	// Sets default values for this actor's properties
 	AHexGridMesh();
@@ -63,7 +66,11 @@ public:
 	//Function to return the status of the current/selected mesh
 	bool GetMeshStatus();
 
-	UFUNCTION()
-	void OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+	//Functions to get set and return the status of can hold value
+	void SetCanHoldValue(bool CH);
+	bool GetCanHoldValue();
+
+	//UFUNCTION()
+	//void OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 
 };
