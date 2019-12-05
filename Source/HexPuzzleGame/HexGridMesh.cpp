@@ -78,7 +78,7 @@ void AHexGridMesh::UnlockMesh()
 	CanMoveMesh = true;
 }
 
-bool AHexGridMesh::LockMesh()
+bool AHexGridMesh::LockMeshOntoGrid()
 {
 	CanMoveMesh = false;
 	

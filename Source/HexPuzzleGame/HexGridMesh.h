@@ -56,9 +56,9 @@ public:
 
 	//Function to unlock the mesh movement
 	void UnlockMesh();
-
+	
 	//Function to lock the mesh into its current position
-	bool LockMesh();
+	bool LockMeshOntoGrid();
 
 	//Function to return the status of the current/selected mesh
 	bool GetMeshStatus();

@@ -27,7 +27,7 @@ AMyPawn::AMyPawn()
 	SelectedHexMesh = NULL;
 	WorldDirection = FVector(0, 0, 0);
 	WorldDirection = FVector(0, 0, 0);
-	CanHoldHex = true;
+	CanHoldHex = false;
 	CurrentHexSpawner = NULL;
 	IsReadyToSpawn = false;
 }
@@ -83,7 +83,7 @@ void AMyPawn::HoldHex()
 {
 	//Checking what was hit by the mouse cursor and then getting that actor's instance details
 	FHitResult HitResult;
-	PController->GetHitResultUnderCursor(ECollisionChannel::ECC_WorldStatic, false, HitResult);
+	PController->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, HitResult);
 	if (HitResult.bBlockingHit)
 	{
 		if (HitResult.GetActor()->GetClass()->IsChildOf(AHexGridMesh::StaticClass()))
@@ -107,7 +107,7 @@ void AMyPawn::ReleaseHex()
 	CanHoldHex = false;
 
 	//Locking the mesh's movement
-	IsReadyToSpawn = SelectedHexMesh->LockMesh();
+	IsReadyToSpawn = SelectedHexMesh->LockMeshOntoGrid();
 	
 	if (IsReadyToSpawn && CurrentHexSpawner)
 	{
