@@ -34,6 +34,9 @@ private :
 	//Variable to store Current HexSpawner in scene
 	class AHexSpawner* CurrentHexSpawner;
 
+	//Variable to store the current grid in scene
+	class AHexGrid* CurrentHexGrid;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

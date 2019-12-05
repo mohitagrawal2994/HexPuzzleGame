@@ -78,12 +78,10 @@ void AHexGridMesh::UnlockMesh()
 	CanMoveMesh = true;
 }
 
-bool AHexGridMesh::LockMeshOntoGrid()
+void AHexGridMesh::LockMesh()
 {
 	CanMoveMesh = false;
 	
-	//Returns true value if successfully locked the mesh onto hexgrid
-	return true;
 }
 
 bool AHexGridMesh::GetMeshStatus()

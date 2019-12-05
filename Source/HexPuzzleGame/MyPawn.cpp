@@ -7,6 +7,7 @@
 #include "GameFramework/PlayerController.h"
 #include "HexGridMesh.h"
 #include "HexSpawner.h"
+#include "HexGrid.h"
 #include "Engine/World.h"
 #include "Engine/Public/EngineUtils.h"
 
@@ -50,6 +51,14 @@ void AMyPawn::BeginPlay()
 			{
 				break;
 			}
+		}
+	}
+	for (TActorIterator<AActor> MyItr(GetWorld()); MyItr; ++MyItr)
+	{
+		CurrentHexGrid = Cast<AHexGrid>(*MyItr);
+		if (CurrentHexGrid)
+		{
+			break;
 		}
 	}
 
@@ -106,8 +115,9 @@ void AMyPawn::ReleaseHex()
 	//Removing the property to move the mesh
 	CanHoldHex = false;
 
+	IsReadyToSpawn = CurrentHexGrid->AddToGrid(CurrentHexSpawner->GetActorLocation(), SelectedHexMesh);
 	//Locking the mesh's movement
-	IsReadyToSpawn = SelectedHexMesh->LockMeshOntoGrid();
+	//IsReadyToSpawn = SelectedHexMesh->LockMeshOntoGrid();
 	
 	/*if (IsReadyToSpawn && CurrentHexSpawner)
 	{
