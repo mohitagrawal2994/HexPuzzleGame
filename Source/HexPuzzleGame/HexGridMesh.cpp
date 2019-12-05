@@ -20,8 +20,6 @@ AHexGridMesh::AHexGridMesh()
 
 	CanMoveMesh = false;
 	CanHoldValue = true;
-
-	//HexTileMesh->OnComponentBeginOverlap.AddDynamic(this, &AHexGridMesh::OnOverlapBegin);
 }
 
 // Called when the game starts or when spawned
@@ -81,7 +79,6 @@ void AHexGridMesh::UnlockMesh()
 void AHexGridMesh::LockMesh()
 {
 	CanMoveMesh = false;
-	
 }
 
 bool AHexGridMesh::GetMeshStatus()
@@ -98,13 +95,3 @@ bool AHexGridMesh::GetCanHoldValue()
 {
 	return CanHoldValue;
 }
-
-/*void AHexGridMesh::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	// Other Actor is the actor that triggered the event. Check that is not ourself.  
-	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Overlapping actor is %s"), *OtherActor->GetName());
-	}
-}*/
-

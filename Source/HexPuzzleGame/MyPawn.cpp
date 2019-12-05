@@ -102,6 +102,10 @@ void AMyPawn::HoldHex()
 			{
 				CanHoldHex = true;
 			}
+			else
+			{
+				SelectedHexMesh = NULL;
+			}
 		}
 	}
 }
@@ -116,14 +120,11 @@ void AMyPawn::ReleaseHex()
 	CanHoldHex = false;
 
 	IsReadyToSpawn = CurrentHexGrid->AddToGrid(CurrentHexSpawner->GetActorLocation(), SelectedHexMesh);
-	//Locking the mesh's movement
-	//IsReadyToSpawn = SelectedHexMesh->LockMeshOntoGrid();
-	
-	/*if (IsReadyToSpawn && CurrentHexSpawner)
-	{
-		CurrentHexSpawner->SpawnHexagonMesh();
-	}*/
 	//Removing the mesh instance details
 	SelectedHexMesh = NULL;
+	if (IsReadyToSpawn && CurrentHexSpawner)
+	{
+		CurrentHexSpawner->SpawnHexagonMesh();
+	}
 }
 

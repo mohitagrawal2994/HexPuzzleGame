@@ -68,6 +68,7 @@ void AHexGrid::SpawnGrid()
 						CalcYPos = (yDisplace*j) + yOffset;
 					}
 					SpawnedItemsArray[i][j] = GetWorld()->SpawnActor<AHexGridMesh>(HexagonMesh, FVector(xOffset * i, CalcYPos, 0), FRotator(0, 0, 0), SpawnParams);
+					SpawnedItemsArray[i][j]->LockMesh();
 					SpawnedItemsArray[i][j]->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
 				}
 			}
@@ -89,6 +90,7 @@ bool AHexGrid::AddToGrid(FVector BBoxLocation, AHexGridMesh* ITmesh)
 	if ((MinX < -XErrorTolerance) || (MinX > (XSpace+XErrorTolerance)) || (MinY < -yOffset) || (MinY > (YSpace+ yOffset)))
 	{
 		ITmesh->SetActorLocation(BBoxLocation);
+		return false;
 	}
 	else
 	{
@@ -139,13 +141,48 @@ bool AHexGrid::AddToGrid(FVector BBoxLocation, AHexGridMesh* ITmesh)
 				}
 			}
 		}
-		//Move the mesh to the new X and Y Location
-		ITmesh->SetActorLocation(FVector(MinX, MinY, 1.0f));
-		ITmesh->LockMesh();
+
+		//Find the mesh on grid with the same location
+		AHexGridMesh* OnGridMesh = NULL;
+		for (int i = 0; i < xGridsize; i++)
+		{
+			for (int j = 0; j < yGridsize; j++)
+			{
+				if (SpawnedItemsArray[i][j]->GetActorLocation().X == MinX && SpawnedItemsArray[i][j]->GetActorLocation().Y == MinY)
+				{
+					OnGridMesh = SpawnedItemsArray[i][j];
+					break;
+				}
+			}
+		}
+
+		if (OnGridMesh != NULL)
+		{
+			//Check whether the grid mesh can hold value
+			if (OnGridMesh->GetCanHoldValue())
+			{
+				//Move the mesh to the new X and Y Location
+				ITmesh->SetActorLocation(FVector(MinX, MinY, 1.0f));
+				ITmesh->LockMesh();
+				OnGridMesh->SetValue(ITmesh->GetValue());
+				OnGridMesh->SetCanHoldValue(false);
+				OnGridMesh->SettingMaterials();
+				ITmesh->Destroy();
+				//Return true to spawn a new hexagon
+				return true;
+			}
+			else
+			{
+				//Resetting the hex cube location to Spawner
+				ITmesh->SetActorLocation(BBoxLocation);
+
+				//Returns a false as the point where the hex was placed was not empty
+				return false;
+			}
+		}
+		ITmesh->SetActorLocation(BBoxLocation);
+		return false;
 	}
-	
-	UE_LOG(LogTemp, Warning, TEXT("After MinX is %f Min Y is %f"), MinX, MinY);
-	return false;
 }
 
 
