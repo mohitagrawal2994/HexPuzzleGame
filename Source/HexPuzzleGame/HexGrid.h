@@ -26,6 +26,20 @@ protected:
 	float YSpace;
 	float XErrorTolerance;
 
+	//Variable to Store the last mesh mesh placed
+	class AHexGridMesh* OnGridMesh;
+
+	//Array to store the spawned actors
+	class AHexGridMesh* SpawnedItemsArray[5][5];
+
+	//Variable to store the spawned actors index of adjoining spawns
+	TArray<int32> ArrayRow;
+	TArray<int32> ArrayColumn;
+
+	//Variable to store the last placed spawned mesh index
+	int MeshRow;
+	int MeshColumn;
+
 public:	
 	// Sets default values for this actor's properties
 	AHexGrid();
@@ -51,12 +65,18 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Mesh")
 	TSubclassOf<class AHexGridMesh> HexagonMesh;
 
-	//Array to store the spawned actors
-	class AHexGridMesh* SpawnedItemsArray[5][5];
-
 	//Function to spawn the actors
 	void SpawnGrid();
 
 	//Function to add the meshes onto the grid
 	bool AddToGrid(FVector BBoxLocation, class AHexGridMesh* ITMesh);
+
+	//Function to find the neighbouring Hexagons
+	void FindAdjoiningHex();
+
+	//Function to consolidate the hexes according to the neighbours
+	void HexConsolidate();
+
+	//Function to add to array index
+	void AddToIndex(int x, int y);
 };

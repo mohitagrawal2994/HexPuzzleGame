@@ -24,6 +24,11 @@ AHexGrid::AHexGrid()
 	XSpace = 0.0;
 	YSpace = 0.0;
 	XErrorTolerance = 12.0;
+
+	OnGridMesh = NULL;
+
+	MeshRow = -1;
+	MeshColumn = -1;
 }
 
 // Called when the game starts or when spawned
@@ -143,13 +148,14 @@ bool AHexGrid::AddToGrid(FVector BBoxLocation, AHexGridMesh* ITmesh)
 		}
 
 		//Find the mesh on grid with the same location
-		AHexGridMesh* OnGridMesh = NULL;
 		for (int i = 0; i < xGridsize; i++)
 		{
 			for (int j = 0; j < yGridsize; j++)
 			{
 				if (SpawnedItemsArray[i][j]->GetActorLocation().X == MinX && SpawnedItemsArray[i][j]->GetActorLocation().Y == MinY)
 				{
+					MeshRow = i;
+					MeshColumn = j;
 					OnGridMesh = SpawnedItemsArray[i][j];
 					break;
 				}
@@ -168,6 +174,15 @@ bool AHexGrid::AddToGrid(FVector BBoxLocation, AHexGridMesh* ITmesh)
 				OnGridMesh->SetCanHoldValue(false);
 				OnGridMesh->SettingMaterials();
 				ITmesh->Destroy();
+
+				//Empty the index array 
+				ArrayRow.Empty();
+				ArrayColumn.Empty();
+
+				//Function to find adjoining hexes and consolidate
+				FindAdjoiningHex();
+				HexConsolidate();
+
 				//Return true to spawn a new hexagon
 				return true;
 			}
@@ -182,6 +197,122 @@ bool AHexGrid::AddToGrid(FVector BBoxLocation, AHexGridMesh* ITmesh)
 		}
 		ITmesh->SetActorLocation(BBoxLocation);
 		return false;
+	}
+}
+
+void AHexGrid::FindAdjoiningHex()
+{
+	//Test whether the last placed hex is on edge and save adjoining indexes in the same way
+	//Whether hex was placed in left bottom corner
+	if ((MeshRow == 0) && (MeshColumn == 0))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Left Bottom Corner"));
+	}
+	//Whether hex was placed in Right Bottom Corner
+	else if ((MeshRow == 0) && (MeshColumn == (yGridsize - 1)))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Right Bottom Corner"));
+	}
+	//Whether hex was placed in Left Top Corner
+	else if ((MeshRow == (xGridsize - 1)) && (MeshColumn == 0))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Left Top Corner"));
+	}
+	//Whether hex was placed in Right Top Corner
+	else if ((MeshRow == (xGridsize - 1)) && (MeshColumn == (yGridsize - 1)))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Right Top Corner"));
+	}
+	//Whether hex was placed in Row 0
+	else if ((MeshRow == 0) && (MeshColumn < yGridsize))
+	{
+		for (int i = 0; i <= 1; i++)
+		{
+			for (int j = (MeshColumn - 1); j <= (MeshColumn + 1); j++)
+			{
+				AddToIndex(i, j);
+			}
+		}
+	}
+	//Whether hex was placed in Column 0
+	else if ((MeshRow < xGridsize) && (MeshColumn == 0))
+	{
+		for (int i = (MeshRow-1); i <= (MeshRow + 1); i++)
+		{
+			for (int j = MeshColumn; j <= (MeshColumn + 1); j++)
+			{
+				AddToIndex(i, j);
+			}
+		}
+	}
+	//Whether hex was placed in The Max Row Number
+	else if ((MeshRow == (xGridsize - 1)) && (MeshColumn < yGridsize))
+	{
+		for (int i = (MeshRow - 1); i <= MeshRow; i++)
+		{
+			for (int j = (MeshColumn-1); j <= (MeshColumn + 1); j++)
+			{
+				AddToIndex(i, j);
+			}
+		}
+	}
+	//Whether hex was placed in Max Column Number
+	else if ((MeshRow < xGridsize) && (MeshColumn == (yGridsize - 1)))
+	{
+		for (int i = (MeshRow - 1); i <= (MeshRow+1); i++)
+		{
+			for (int j = (MeshColumn - 1); j <= MeshColumn; j++)
+			{
+				AddToIndex(i, j);
+			}
+		}
+	}
+	//Whether hex was placed with surrounding hexes
+	else
+	{
+		for (int i = (MeshRow - 1); i <= (MeshRow + 1); i++)
+		{
+			for (int j = (MeshColumn - 1); j <= (MeshColumn+1); j++)
+			{
+				AddToIndex(i, j);
+			}
+		}
+	}
+}
+
+void AHexGrid::HexConsolidate()
+{
+	if ((ArrayRow.Num() != 0) && (ArrayColumn.Num() != 0))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Consolidating"));
+		int flag = 0;
+		for (int p = 0; p < ArrayRow.Num(); p++)
+		{
+			flag = flag + 1;
+		}
+		if (flag > 2)
+		{
+			SpawnedItemsArray[MeshRow][MeshColumn]->SetValue(SpawnedItemsArray[MeshRow][MeshColumn]->GetValue() + 1);
+			SpawnedItemsArray[MeshRow][MeshColumn]->SettingMaterials();
+			for (int p = 0; p < ArrayRow.Num(); p++)
+			{
+				SpawnedItemsArray[ArrayRow[p]][ArrayColumn[p]]->SetValue(0);
+				SpawnedItemsArray[ArrayRow[p]][ArrayColumn[p]]->SetCanHoldValue(true);
+				SpawnedItemsArray[ArrayRow[p]][ArrayColumn[p]]->SettingMaterials();
+			}
+		}
+	}
+}
+
+void AHexGrid::AddToIndex(int x, int y)
+{
+	if (OnGridMesh->GetValue() == SpawnedItemsArray[x][y]->GetValue())
+	{
+		if ((x != MeshRow) || (y != MeshColumn))
+		{
+			ArrayRow.Add(x);
+			ArrayColumn.Add(y);
+		}
 	}
 }
 
